@@ -1,0 +1,181 @@
+﻿/*
+ |
+ |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
+ |Election Results v10.2.0 / Résultats électoraux v10.2.0
+ |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |
+ | Version 10.2
+ | Copyright 2012 Esri
+ |
+ | Licensed under the Apache License, Version 2.0 (the "License");
+ | you may not use this file except in compliance with the License.
+ | You may obtain a copy of the License at
+ |
+ |    http://www.apache.org/licenses/LICENSE-2.0
+ |
+ | Unless required by applicable law or agreed to in writing, software
+ | distributed under the License is distributed on an "AS IS" BASIS,
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ | See the License for the specific language governing permissions and
+ | limitations under the License.
+ */
+/* This file contains the tablet specific style settings for "Election Results" template */
+/* The common settings for the styles are defined in "electionresults.css" */
+
+/* Use this file to perform the following: */
+
+/* 1.  Set the body styles                      - { Style(s) to look for: html, body } */
+/* 2.  Set styles for icons                     - { Style(s) to look for: imgOptions,imgShare,tdHeader}*/
+/* 3.  Set the styles for search container      - { Style(s) to look for: divAddressContent, divAddressPlaceHolder, divAddressResultContainer, imgLocate,*/
+/*                                                                        txtAddress, bottomborder}*/
+/* 4.  Set the styles for the bottom panel      - { Style(s) to look for: divBottomPanelHeader, divChartTitle}*/
+/* 5.  Set the styles for info window           - { Style(s) to look for: divResultChartContainer,divInfoWindowContent,esriSimpleSlider}*/
+/* 6.  Various other styles                     - { Style(s) to look for: trElectionContest, tableHeader, lblAppNameText
+
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/* Styles for body*/
+
+html, body
+{
+    font-size: 14px !important;
+}
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for icons */
+
+.imgOptions
+{
+    height: 36px !important; /*CanMod*/
+    width: 36px !important; /*CanMod*/
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.imgShare
+{
+	padding: 0px 10px; /*CanMod*/
+    height: 44px !important;
+    width: 44px !important;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.tdHeader
+{
+    width: 60px;
+    font-weight: bolder;
+}
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for search container*/
+
+.divAddressContent
+{
+    position: absolute;
+    background-color: rgba(98, 98, 98,.95);
+    top: 90px; /*CanMod*/
+    right: 4px;
+    width: 295px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    z-index: 999;
+}
+
+.divAddressPlaceHolder
+{
+    width: 278px;
+    height: 46px;
+}
+
+.divAddressResultContainer
+{
+    margin-top: 5px;
+    margin-left: 8px;
+}
+
+.imgLocate
+{
+    height: 44px !important;
+    width: 44px !important;
+    vertical-align: middle;
+    top: 52px;
+    right: 15px;
+}
+
+.txtAddress
+{
+    font-size: 14px !important;
+    height: 44px !important;
+    width: 100%;
+}
+
+.bottomborder
+{
+    height: 30px;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for bottom panel*/
+
+.divBottomPanelHeader
+{
+    height: 50px;
+}
+
+.divChartTitle
+{
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+	height: 20px; /*CanMod*/
+	overflow: hidden; /*CanMod*/
+	white-space: nowrap; /*CanMod*/
+	border-top: solid 1px gray; /*CanMod*/
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for info-window*/
+
+.divResultChartContainer
+{
+    width: 424px;
+    height: 200px;
+    overflow: hidden;
+}
+
+.divInfoWindowContent
+{
+    position: absolute;
+    width: 424px;
+    height: 180px;
+    overflow: hidden;
+    margin-top: -10px;
+}
+
+.esriSimpleSlider
+{
+    z-index: 1000;
+}
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*CanMod-various styles*/
+#trElectionContest /*Layer options in footer*/
+{
+	font-weight: 600;
+}
+
+ /*CanMod: Adjustements to prevent header title wrapping*/
+ .tableHeader
+ {
+ table-layout: fixed;
+ }
+ #lblAppNameText
+ {
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ overflow:hidden;
+ }

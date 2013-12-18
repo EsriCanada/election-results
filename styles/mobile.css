@@ -1,0 +1,274 @@
+﻿/*
+ |
+ |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
+ |Election Results v10.2.0 / Résultats électoraux v10.2.0
+ |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |
+ | Version 10.2
+ | Copyright 2012 Esri
+ |
+ | Licensed under the Apache License, Version 2.0 (the "License");
+ | you may not use this file except in compliance with the License.
+ | You may obtain a copy of the License at
+ |
+ |    http://www.apache.org/licenses/LICENSE-2.0
+ |
+ | Unless required by applicable law or agreed to in writing, software
+ | distributed under the License is distributed on an "AS IS" BASIS,
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ | See the License for the specific language governing permissions and
+ | limitations under the License.
+ */
+/* This file contains the mobile specific style settings for "Election Results" template */
+/* The common settings for the styles are defined in "electionresults.css" */
+
+/* Use this file to perform the following: */
+
+/* 1.  Set the body styles                       - { Style(s) to look for: html, body } */
+/* 2.  Set styles for icons, buttons and header styles
+                                                 - { Style(s) to look for: tableHeader,tdHeader,imgOptions,imgShare}*/
+/* 3.  Set the styles for search container       - { Style(s) to look for: divAddressContainer,divAddressContent,divAddressPlaceHolder,divAddressResultContainer,
+                                                                          txtAddress,imgLocate}*/
+/* 4.  Set the styles for contest list container - { Style(s) to look for: divElectionContenderDetails,tdListHeader,mblEdgeToEdgeList,mblListItem,
+                                                                          mblListItem A.mblListItemAnchor,bottomborder,mblListItemTextBox,mblListItemIcon}*/
+/* 5.  Set the styles for bar chart container    - { Style(s) to look for: divElectionContainer,divRepresentativeDataScrollContainer,divElectionContent,
+                                                                          divRepresentativeScrollContent,divChartTitle,divVotes,divWinningParty}*/
+/* 6.  Set the styles for Esri slider            - { Style(s) to look for: esriSimpleSlider}*/
+/* 7.  Set the styles for info window            - { Style(s) to look for: divInfoWindowContainer .content,divInfoWindowContainer .title,spanContentText}*/
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/* Styles for body*/
+
+html, body
+{
+    font-size: 15px !important;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*styles for icons, buttons and header styles*/
+
+.tableHeader
+{
+    width: 100%;
+}
+
+.tdHeader
+{
+    width: 65px;
+    font-weight: bolder;
+}
+
+.imgOptions
+{
+    height: 36px !important;
+    width: 36px !important;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.imgShare
+{
+	padding: 0px 10px; /*CanMod*/
+    height: 44px !important;
+    width: 44px !important;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for search container*/
+
+.divAddressContainer
+{
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0,0,0,.65);
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    z-index: 1001 !important;
+}
+
+.divAddressContent
+{
+    z-index: 1001;
+    background-color: #585858;
+    width: 100%;
+    height: 100%;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 0 10px #fff;
+    -moz-box-shadow: 0 0 10px #fff;
+    -o-box-shadow: 0 0 10px #fff;
+    box-shadow: 0 0 10px #fff;
+}
+
+.divAddressPlaceHolder
+{
+    height: 46px;
+}
+
+.divAddressResultContainer
+{
+    margin: 5px -7px 0px 10px;
+}
+
+.txtAddress
+{
+    font-size: 15px !important;
+    height: 44px !important;
+    width: 100%;
+    padding: 0px !important;
+}
+
+.imgLocate
+{
+    height: 44px !important;
+    width: 44px !important;
+    vertical-align: middle;
+    top: 56px;
+    right:20px;
+}
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for contest list container*/
+
+.divElectionContenderDetails
+{
+    z-index: 1001;
+    background-color: #585858;
+    width: 100%;
+    height: 100%;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 0 10px #fff;
+    -moz-box-shadow: 0 0 10px #fff;
+    -o-box-shadow: 0 0 10px #fff;
+    box-shadow: 0 0 10px #fff;
+}
+
+.tdListHeader
+{
+    font-weight: bold;
+}
+
+.mblEdgeToEdgeList
+{
+    margin-right: 5px;
+    background-color: #585858 !important;
+}
+
+.mblListItem
+{
+    color: #fff !important;
+    height: 50px !important;
+    line-height: 50px !important;
+}
+
+.mblListItem A.mblListItemAnchor
+{
+    padding-left: 5px !important;
+}
+
+.bottomborder
+{
+    height: 40px;
+}
+
+.mblListItemTextBox
+{
+    text-align: left !important;
+}
+
+.mblListItemIcon
+{
+    right: 10px !important;
+    top: 2px !important;
+    height: 44px !important;
+    width: 44px !important;
+    float: right !important;
+    margin-top: 2px !important;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for bar-chart container*/
+
+.divElectionContainer, .divRepresentativeDataScrollContainer, .divElectionContent, .divRepresentativeScrollContent
+{
+    overflow: hidden;
+    position: relative;
+}
+
+.divElectionContent, .divRepresentativeScrollContent
+{
+    width: 100%;
+}
+
+.divChartTitle
+{
+    bottom: 5px;
+    width: 100%;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for Esri slider*/
+
+/* Portrait */
+
+@media screen and (max-width: 320px)
+{
+
+    .esriSimpleSlider
+    {
+        left: 5px !important;
+        top: 100px !important;
+    }
+
+}
+
+/* Landscape */
+
+@media screen and (min-width: 321px) and (max-width: 580px)
+{
+
+    .esriSimpleSlider
+    {
+        left: 5px !important;
+        top: 60px !important;
+    }
+
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for info-window*/
+
+.divInfoWindowContainer .content
+{
+    color: #fff;
+    overflow: auto;
+    padding: 3px 0px 0px 5px !important;
+}
+
+.spanContentText, .divInfoWindowContainer .title
+{
+    font-size: 15px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.spanContentText
+{
+	width:180px;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
