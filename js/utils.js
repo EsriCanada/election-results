@@ -1,8 +1,8 @@
 ﻿/** @license
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -38,7 +38,6 @@ function orientationChanged() {
                 map.resize();
                 SetHeightSplashScreen();
                 SetHeightElectionResults();
-                SetHeightAddressResults();
                 ResizeBarChart();
                 setTimeout(function () {
                     if (selectedGraphic) {
@@ -48,7 +47,6 @@ function orientationChanged() {
                 }, 1000);
             }
             else {
-                FixWidthBottomPanel(); //set width of shortcut links in i-pad orientation change
                 if (selectedGraphic) {
                     map.centerAt(selectedGraphic);
                     isOrientationChanged = false;
@@ -109,33 +107,9 @@ function resizeHandler() {
         map.reposition();
         map.resize();
         ResetSlideControls();
-        FixWidthBottomPanel();
         setTimeout(function () {
             ResizeBarChart();
         }, 500);
-    }
-}
-
-//Set width of shortcut links in i-pad when orientation changed
-function FixWidthBottomPanel() {
-    var width = ((dojo.window.getBox().w) / numberOfContests) - 5;
-    if (isBrowser) {
-        var charWidth = "a".getWidth(11);
-    }
-    else {
-        var charWidth = "a".getWidth(13.5);
-    }
-    var numberChar = Math.floor(width / charWidth) - 2;
-    for (var i in electionResultData) {
-        dojo.byId("divContest" + i).style.width = width + "px";
-        if (isBrowser) {
-            dojo.byId("divContest" + i).style.fontSize = "11px";
-        }
-        else {
-            dojo.byId("divContest" + i).style.fontSize = "14px";
-        }
-        dojo.byId("divContest" + i).innerHTML = electionResultData[i].Title.trimString(numberChar);
-        dojo.byId("divContest" + i).title = electionResultData[i].Title;
     }
 }
 
@@ -161,7 +135,6 @@ function HideSplashScreenMessage() {
     dojo.replaceClass("divSplashScreenDialog", "hideContainer", "showContainer");
 
     window.onkeydown = null;
-	FlashSearchButton(); //CanMod: Flash the search button when the splash screen is closed
 }
 
 //Set height for splash screen
@@ -209,7 +182,6 @@ String.prototype.trimString = function (len) {
 
 //Show sharing container
 function ShowSharingContainer() {
-	StopFlashSearchButton(); //CanMod: Stop flashing search button when share button clicked
     var cellheight = (isMobileDevice || isTablet) ? 79 : 57;
     if (dojo.hasClass('divShareContainer', "showContainerHeight")) {
         dojo.replaceClass("divShareContainer", "hideContainerHeight", "showContainerHeight");
@@ -220,10 +192,7 @@ function ShowSharingContainer() {
         dojo.replaceClass("divShareContainer", "showContainerHeight", "hideContainerHeight");
         ShareLink();
     }
-    if (dojo.hasClass('divAddressContent', "showContainerHeight")) {
-        dojo.replaceClass("divAddressContent", "hideContainerHeight", "showContainerHeight");
-        dojo.byId('divAddressContent').style.height = '0px';
-    }
+	showHideSearch(true);
 }
 
 //Create the tiny URL with current extent and selected feature
@@ -309,7 +278,6 @@ function Share(site) {
 
 //Display the current location of the user
 function ShowMyLocation() {
-	StopFlashSearchButton(); //CanMod: Stop flashing search button when geolocation button clicked
     navigator.geolocation.getCurrentPosition(
 		function (position) {
 		    ShowProgressIndicator('map');
@@ -344,90 +312,6 @@ function ShowMyLocation() {
 		            break;
 		    }
 		}, { timeout: 5000 });
-}
-
-//Show address container with wipe-in animation
-function ShowLocateContainer() {
-	StopFlashSearchButton(); //CanMod: Stop search button flash when search button clicked
-    dojo.byId("txtAddress").blur();
-	//CanMod: Prevent previously searched address from being erased and insert the correct placeholder
-    if (dojo.byId("tdsearchAddress").className == "tdSearchByAddress") {
-        //dojo.byId("txtAddress").value = dojo.byId("txtAddress").getAttribute("defaultAddress");
-		dojo.attr(dojo.byId("txtAddress"),"placeholder", intl.addressPlaceholder);
-    }
-    else {
-        //dojo.byId("txtAddress").value = dojo.byId("txtAddress").getAttribute("defaultPrecinct");
-		dojo.attr(dojo.byId("txtAddress"),"placeholder", dojo.string.substitute(intl.divisionPlaceholder,[locatorSettings.Locators[1].SampleSearchString]));
-    }
-    if (isMobileDevice) {
-        dojo.byId('divAddressContainer').style.display = "block";
-        dojo.replaceClass("divAddressContent", "hideContainerHeight", "showContainerHeight");
-    }
-    else {
-        if (dojo.hasClass('divAddressContent', "showContainerHeight")) {
-            dojo.replaceClass("divAddressContent", "hideContainerHeight", "showContainerHeight");
-            dojo.byId('divAddressContent').style.height = '0px';
-        }
-        else {
-            dojo.byId("txtAddress").style.color = "gray";
-            dojo.byId('divAddressContent').style.height = "300px";
-            dojo.replaceClass("divAddressContent", "showContainerHeight", "hideContainerHeight");
-        }
-    }
-    if (dojo.hasClass('divShareContainer', "showContainerHeight")) {
-        dojo.replaceClass("divShareContainer", "hideContainerHeight", "showContainerHeight");
-        dojo.byId('divShareContainer').style.height = '0px';
-    }
-    RemoveChildren(dojo.byId('tblAddressResults'));
-    setTimeout(function () {
-        SetHeightAddressResults();
-    }, 500);
-}
-
-//Hide address container with wipe-out animation
-function HideAddressContainer() {
-    if (isMobileDevice) {
-        setTimeout(function () {
-            dojo.byId('divAddressContainer').style.display = "none";
-        }, 500);
-        dojo.replaceClass("divAddressContent", "hideContainerHeight", "showContainerHeight");
-    }
-    else {
-        dojo.replaceClass("divAddressContent", "hideContainerHeight", "showContainerHeight");
-        dojo.byId('divAddressContent').style.height = '0px';
-    }
-}
-
-//Set height and create scrollbar for address results
-function SetHeightAddressResults() {
-    var height = (isMobileDevice) ? dojo.window.getBox().h - 150 : dojo.coords(dojo.byId('divAddressContent')).h - ((isTablet) ? 150 : 120);
-    dojo.byId('divAddressScrollContent').style.height = (height - 30) + "px";
-    CreateScrollbar(dojo.byId("divAddressScrollContainer"), dojo.byId("divAddressScrollContent"));
-    dojo.byId('divAddressScrollContainerscrollbar_handle').style.top = "0px";
-}
-
-//Set the styles for precinct button on-click
-function SearchByPrecinct() {
-    dojo.byId("txtAddress").style.color = "gray";
-    RemoveChildren(dojo.byId('tblAddressResults'));
-    RemoveScrollBar(dojo.byId("divAddressScrollContainer"));
-    dojo.byId("txtAddress").value = dojo.byId("txtAddress").getAttribute("defaultPrecinct");
-    lastSearchString = dojo.byId("txtAddress").value.trim();
-    dojo.byId("tdsearchAddress").className = "tdSearchByUnSelectedAddress";
-    dojo.byId("tdSearchPrecinct").className = "tdSearchByPrecinct";
-	dojo.attr(dojo.byId("txtAddress"),"placeholder", dojo.string.substitute(intl.divisionPlaceholder,[locatorSettings.Locators[1].SampleSearchString])); //CanMod: Change placholder on tab change
-}
-
-//Set the styles for Address button on-click
-function SearchByAddress() {
-    dojo.byId("txtAddress").style.color = "gray";
-    RemoveChildren(dojo.byId('tblAddressResults'));
-    RemoveScrollBar(dojo.byId("divAddressScrollContainer"));
-    dojo.byId("txtAddress").value = dojo.byId("txtAddress").getAttribute("defaultAddress");
-    lastSearchString = dojo.byId("txtAddress").value.trim();
-    dojo.byId("tdsearchAddress").className = "tdSearchByAddress";
-    dojo.byId("tdSearchPrecinct").className = "tdSearchByUnSelectedPrecinct";
-	dojo.attr(dojo.byId("txtAddress"),"placeholder", intl.addressPlaceholder); //CanMod: Change placholder on tab change
 }
 
 var scrolling = false; //flag to detect is touch-move event scrolling div
@@ -465,7 +349,7 @@ function CreateScrollbar(container, content) {
     scrollbar_track.appendChild(scrollbar_handle);
     container.appendChild(scrollbar_track);
 
-    if (content.scrollHeight <= content.offsetHeight) {
+    if (content.scrollHeight <= content.offsetHeight + 5) {
         scrollbar_handle.style.display = 'none';
         scrollbar_track.style.display = 'none';
         return;
@@ -842,11 +726,11 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
 	//jsonValues is always provided in increasing order
 	var jsonLength = jsonValues.length;
 	var candidatesRemoved = 0;
-	if (jsonLength > 9) {
+	if (jsonLength > 10) {
 		var subIndex = 0;
 		for (var i=0;i<jsonLength;i++) {
 			//Reduce array to 8, removing 1 more than 9 to make space for text warning that candidates removed
-			if (i < jsonLength - 8) {
+			if (i < jsonLength - 9) {
 				candidatesRemoved++;
 				jsonValues.shift(); //Remove the topmost from each list
 				myLabelSeriesarray.shift();
@@ -862,6 +746,11 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
 	}
 	//End of CanMod
 	
+	var colour = "black";
+	if (isMobileDevice) {
+		colour = "white";
+	}
+	
     if (!totalBallots) {
         totalBallots = "0"; //CanMod: Show zero instead of N/A
     }
@@ -871,7 +760,7 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
 
 	//CanMod: Add label to warn that candidates were removed when appropriate
 	if (candidatesRemoved != 0) {
-		var barChart = new dojox.charting.Chart2D(chartDiv, {title:String(candidatesRemoved) + " " + intl.candNotShown, titlePos:"top",titleGap:1,titleFont:"italic normal normal 8pt Arial",titleFontColor: "white"});
+		var barChart = new dojox.charting.Chart2D(chartDiv, {title:String(candidatesRemoved) + " " + intl.candNotShown, titlePos:"top",titleGap:1,titleFont:"italic normal normal 8pt Arial",titleFontColor: colour});
 	}
 	else {
 		var barChart = new dojox.charting.Chart2D(chartDiv);
@@ -895,34 +784,42 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
         barChart.addPlot("other", { type: "Bars", gap: 2, vAxis: "other y", maxBarSize: 15, margins: 0 });
     }
     barChart.addAxis("x",
-    { stroke: {color: "white", width:0}, //CanMod
+    { stroke: {color: colour, width:0}, //CanMod
       includeZero: true,
       minorTicks: false,
       majorLabels: false, //CanMod
       minorLabels: false,
-      fontColor: "white",
+      fontColor: colour,
 	  font: "normal normal normal 1pt Arial", //CanMod
       microTicks: false,
       min: 25, max: 100
   });
-
+  
+	if (isMobileDevice) {
+		var fontAx = "normal normal normal 12px Verdana";
+    }
+    else {
+		var fontAx = "normal normal normal 11px Verdana";
+    }
     barChart.addAxis("y",
     { labels: myLabelSeriesarray,
-        fontColor: "white",
-        stroke: "white",
+        fontColor: colour,
+        stroke: colour,
         natural: false, majorTickStep: 1, minorTicks: false,
         fixUpper: false,
-        vertical: true
+        vertical: true,
+		font: fontAx
     });
 
     barChart.addAxis("other x", { leftBottom: false, labels: false });
 
     barChart.addAxis("other y", { vertical: true,
         leftBottom: false,
-        fontColor: "white",
+        fontColor: colour,
         minorTicks: false,
-        stroke: "white",
-        labels: myParallelLabelSeriesarray
+        stroke: colour,
+        labels: myParallelLabelSeriesarray,
+		font: fontAx
     });
 
     barChart.addSeries("Series 1", jsonValues);
@@ -939,7 +836,7 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
     else {
         myTheme.axis.tick.font = "normal normal normal 14px Verdana";
     }
-    myTheme.axis.tick.color = "white";
+    myTheme.axis.tick.color = colour;
     barChart.setTheme(myTheme);
 
     barChart.render();
@@ -976,6 +873,11 @@ function ShowBarChart(jsonValues, chartDiv, myLabelSeriesarray, myParallelLabelS
 
 // Show Pie Chart
 function ShowPieChart(jsonValues, chartDiv, displayText) {
+	var colour = "black";
+	if (isMobileDevice) {
+		colour = "white";
+	}
+
     var chartTable = dojo.create("table", { "style": "width:100%;height:100%;" }, chartDiv);
     var chartTbody = dojo.create("tbody", {}, chartTable);
     var chartRow = dojo.create("tr", {}, chartTbody);
@@ -1000,7 +902,7 @@ function ShowPieChart(jsonValues, chartDiv, displayText) {
     var myTheme = dojox.charting.themes.Desert;
     myTheme.chart.fill = "transparent";
     myTheme.plotarea.fill = "transparent";
-    myTheme.series.fontColor = "white";
+    myTheme.series.fontColor = colour;
     myTheme.series.font = "normal normal normal 9pt Verdana";
     pieChart.setTheme(myTheme);
 
@@ -1152,63 +1054,19 @@ String.prototype.bool = function () {
     return (/^true$/i).test(this);
 };
 
-//Clear default value for text box controls
-function ClearDefaultText(e) {
-    var target = window.event ? window.event.srcElement : e ? e.target : null;
-    if (!target) return;
-    target.style.color = "#FFF";
-    target.value = '';
-}
-
-//Set default value on blur
-function ReplaceDefaultText(e) {
-    var target = window.event ? window.event.srcElement : e ? e.target : null;
-    if (!target) return;
-
-    if (dojo.byId("tdSearchPrecinct").className == "tdSearchByPrecinct") {
-        ResetTargetValue(target, "defaultPrecinct", "gray");
-    }
-    else {
-        ResetTargetValue(target, "defaultAddress", "gray");
-    }
-}
-
-//Set changed value for address/Precinct
-function ResetTargetValue(target, title, color) {
-    if (target.value == "" && target.getAttribute(title)) {
-        target.value = target.title;
-        if (target.title == "") {
-            target.value = target.getAttribute(title);
-        }
-    }
-    target.style.color = color;
-    lastSearchString = dojo.byId("txtAddress").value.trim();
-}
-
-//CanMod: Function to flash the search button
-function FlashSearchButton() {
-	if (!isMobileDevice) {
-		buttonFlash = setInterval(function(){
-			var imgElement = dojo.query("#settings img")[0];
-			var imgCurrent = imgElement.src.split("/");
-			imgCurrent = imgCurrent[imgCurrent.length-1];
-			if (imgCurrent == "locate_contrast.png") {
-				imgElement.src = "images/locate.png";
-			}
-			else if (imgCurrent == "locate.png") {
-				imgElement.src = "images/locate_contrast.png";
-			}
-		},1000);
-		setTimeout(function(){
-			StopFlashSearchButton();
-		},30000);
+//Show/Hide the IE7/Mobile/Tablet search window
+function showHideSearch(closeOnly) {
+	var disp = dojo.byId("divAddressSearch").style.display;
+	if (disp == "block") {
+		dojo.byId("divAddressSearch").style.display = "none";
+		dojo.byId("imgSearch").setAttribute("aria-expanded","false");
 	}
-}
-
-//CanMod: Function to stop the search button flashing
-function StopFlashSearchButton() {
-	if (!isMobileDevice) {
-		clearInterval(buttonFlash);
-		dojo.query("#settings img")[0].src = "images/locate.png";
+	else if (disp == "none" && !closeOnly) {
+		if (dojo.hasClass('divShareContainer', "showContainerHeight")) {
+			dojo.replaceClass("divShareContainer", "hideContainerHeight", "showContainerHeight");
+			dojo.byId('divShareContainer').style.height = '0px';
+		}
+		dojo.byId("divAddressSearch").style.display = "block";
+		dojo.byId("imgSearch").setAttribute("aria-expanded","true");
 	}
 }

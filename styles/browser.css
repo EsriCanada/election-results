@@ -1,8 +1,8 @@
 ﻿/*
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -21,15 +21,6 @@
  */
 /* This file contains the browser specific style settings for "Election Results" template */
 /* The common settings for the styles are defined in "electionresults.css" */
-
-/* Use this file to perform the following: */
-
-/* 1.  Set the body styles                      - { Style(s) to look for: html, body }*/
-/* 2.  Set styles for icons                     - { Style(s) to look for: imgOptions,imgShare,tdHeader}*/
-/* 3.  Set the styles for search container      - { Style(s) to look for: divAddressContent,divAddressPlaceHolder,divAddressResultContainer,imgLocate,txtAddress}*/
-/* 4.  Set the styles for info window           - { Style(s) to look for: divResultChartContainer,divInfoWindowContent}*/
-/* 5.  Set the styles for bottom panel          - { Style(s) to look for: divBottomPanelHeader,divChartTitle}*/
-/* 6.  Set various other styles                 - { Style(s) to look for: trElectionContest, tableHeader, lblAppNameText}*/
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
@@ -66,51 +57,6 @@ html, body
 {
     width: 50px;
     font-weight: bolder;
-}
-
-/*-------------------------------------------------------------------------------------------------------------------*/
-
-/*Styles for search container*/
-
-.divAddressContent
-{
-    position: absolute;
-    background-color: #585858;
-    top: 90px; /*CanMod*/
-    right: 5px;
-    width: 295px;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
-    border-radius: 8px;
-    z-index: 999;
-}
-
-.divAddressPlaceHolder
-{
-    width: 275px;
-    height: 32px;
-}
-
-.divAddressResultContainer
-{
-    margin-left: 8px;
-}
-
-.imgLocate
-{
-    height: 30px !important;
-    width: 30px !important;
-    vertical-align: middle;
-    top: 43px;
-    right: 25px;
-}
-.txtAddress
-{
-    font-size: 12px;
-    height: 30px;
-    line-height: 30px;
-    background-color: transparent;
-    width: 100%;
 }
 
 /*-------------------------------------------------------------------------------------------------------------------*/
@@ -153,20 +99,33 @@ html, body
 }
 /*-------------------------------------------------------------------------------------------------------------------*/
 
-/*CanMod-various styles*/
-#trElectionContest /*Layer options in footer*/
-{
-	font-weight: 600;
-}
-
  /*CanMod: Adjustements to prevent header title wrapping*/
  .tableHeader
  {
  table-layout: fixed;
  }
- #lblAppNameText
- {
- text-overflow:ellipsis;
- white-space:nowrap;
- overflow:hidden;
- }
+  
+/*------------------------------------------------------------------------------------------------------------*/
+
+/*Styles for Esri slider */
+
+.esriSimpleSlider
+{
+    top: 65px !important;
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+
+/* Search Module */
+
+/*IE 7 Styling*/
+.searchBlock {
+	top: 90px;
+	height: 230px;
+}
+
+.searchBlock  #autocomplete div{
+	width: 240px;
+	white-space: pre;
+	word-wrap: break-word;
+}

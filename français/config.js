@@ -2,8 +2,8 @@
 /** @license
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -27,7 +27,7 @@ dojo.declare("js.config", null, {
     //
     // Utiliser ce fichier afin de configurer:
     //
-    // 1.  Le titre de l'application                 - [ Balise(s) HTML: ApplicationName, WindowTitle ]
+    // 1.  Le titre de l'application et l'icône      - [ Balise(s) HTML: ApplicationName, WindowTitle, ApplicationIcon ]
     // 2.  Le message de l'écran de garde            - [ Balise(s) HTML: SplashScreenMessage ]
     // 3.  L'URL pour la page d'aide                 - [ Balise(s) HTML: HelpURL ]
     //
@@ -50,10 +50,12 @@ dojo.declare("js.config", null, {
     // 10. Les données pour les mises à jour
     //                                               - [Balise(s) HTML: Updates]
     //
-    // 11. Les URL pour le partage des cartes:
-    // 11a.L'URL pour le service TinyURL             - [ Balise(s) HTML: MapSharingOptions (set TinyURLServiceURL, TinyURLResponseAttribute) ]
-    // 11b. Les options de partage                   - [ Balise(s) HTML: TwitterStatus, TwitterHashtag, TwitterFollow, EmailSubject ]
-    // 11c. L'URL des réseaux sociaux                - [ Balise(s) HTML: FacebookURL, TwitterShareURL ]
+    // 11. Le bouton de bascule des langues          - [Balise(s) HTML: LanguageButton]
+	//
+	// 12. Les URL pour le partage des cartes:
+    // 12a.L'URL pour le service TinyURL             - [ Balise(s) HTML: MapSharingOptions (set TinyURLServiceURL, TinyURLResponseAttribute) ]
+    // 12b. Les options de partage                   - [ Balise(s) HTML: TwitterStatus, TwitterHashtag, TwitterFollow, EmailSubject ]
+    // 12c. L'URL des réseaux sociaux                - [ Balise(s) HTML: FacebookURL, TwitterShareURL ]
     //
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -62,6 +64,9 @@ dojo.declare("js.config", null, {
     // Titre de l'application
     ApplicationName: /*Nom de l'application*/ "Résultats électoraux",
 	WindowTitle: /*Titre de la fenêtre*/ "Résultats électoraux",
+		
+	// Logo de l'application
+	ApplicationIcon: "images/appIcon.png",
 
     // Contenu de l'écran de garde (l'écran qui s'affiche lors du lancement de l'application)
     SplashScreenMessage: "<b>Résultats électoraux</b><br/><hr/><br/>L'application des <b>résultats électoraux</b> permet de visualiser les résultats de chaque circonscription à l'aide d'une carte. Afin d'afficher les résultats vous pouvez sois saisir une adresse ou un numéro de circonscription dans l'outil de recherche ou cliquer un endroit sur la carte. La circonscription sera mise en évidence et les résultats seront affichés dans l'onglet au bas de la page.<br/><br/>",
@@ -139,22 +144,25 @@ dojo.declare("js.config", null, {
     LocatorSettings: {
         Locators: /*Localisateurs*/ [
                 {
-                    DisplayText: /*Texte d'affichage*/ "Adresse",
-                    LocatorParamaters: /*Paramètre du localisateur*/ ["SingleLine"],
-                    LocatorURL: /*URL du localisateur*/ "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
-                    CandidateFields: /*Champs candidats*/ "Loc_name, Score, Match_addr",
-                    DisplayField: /*Champ d'affichage*/ "${Match_addr}",
-                    ZoomLevel: /*Niveau du zoom*/ 7,
-                    AddressMatchScore: /*Score d'appariement minimum*/ 80,
-                    LocatorFieldName: /*Nom du champ du localisateur*/ 'Loc_name',
-                    LocatorFieldValues: /*Valeurs du champ du localisateur*/ ["CAN.StreetName" , "CAN.PointAddress", "CAN.StreetAddress", "CAN.PostalExt"],
-                    //CanMod: Configurez l'étendue utilisé lors d'une recherche par adresse; saisissez un wkid de 0000 afin de
-					//chrercher l'Amérique du Nord en entier. CGS_WGS_1984 : Utilisez wkid 4326 et des dégrées décimaux;
-					//WGS_1984_Web_Mercator : Utilisez wkid 3785 et des mètres; Aucun autre système accepté.
-                    SearchExtent: {xmin: -8865402.789852107, ymin: 5443102.360231639, xmax: -8807068.937666388, ymax: 5400828.978730424, wkid: 3785}
+					DisplayText: /*Texte d'affichage*/ "Rechercher pour une adresse",
+					LabelText: /*Texte de l'étiquette*/ "Adresse",
+					Example: /*Exemple*/ "Essayez de recherché une adresse tel que «12 Place Concord»",
+					LocatorURL: /*URL du localisateur*/ "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+					LocatorParamaters: /*Paramètre du localisateur*/ ["SingleLine"],
+					CandidateFields: /*Champs candidates*/ "Loc_name, Score, Match_addr",
+					DisplayFieldCML2: /*Champ d'affichage*/ "Match_addr",
+					AddressMatchScore: /*Score d'appariement minimum*/ 80,
+					LocatorFieldName: /*Nom du champ du localisateur*/ 'Loc_name',
+					LocatorFieldValues: /*Valeur du champ du localisateur*/ ["CAN.StreetName" , "CAN.PointAddress", "CAN.StreetAddress", "CAN.PostalExt"],
+					//Configurez l'étendue utilisé lors d'une recherche par adresse; saisissez un wkid de 0000 afin
+					//de chercher l'Amérique du Nord en entier. CGS_WGS_1984: Utilisez wkid 4326 et des degrées décimaux;
+					//WGS_1984_Web_Mercator: Utilisez wkid 3785 et des mètres; Aucun autre système accepté.
+					SearchExtent: {xmin: -8865402.789852107, ymin: 5443102.360231639, xmax: -8807068.937666388, ymax: 5400828.978730424, wkid: 3785}
                 },
                 {
-                    DisplayText: /*Texte d'affichage*/ "Circonscription",
+                    DisplayText: /*Texte d'affichage*/ "Rechercher pour une circonscription",
+					LabelText: /*Texte de l'étiquette*/ "Circonscription",
+					Example: /*Exemple*/ "Les numéros de circonscription consistent de 5 chiffres",
                     SampleSearchString: /*Texte échantillon*/ "01001"
                 }
             ]
@@ -311,6 +319,17 @@ dojo.declare("js.config", null, {
               FieldName: "LASTUPDATE"
           },
 
+	// ------------------------------------------------------------------------------------------------------------------------
+	// BOUTON DE BASCULE DE LA LANGUE
+	// ------------------------------------------------------------------------------------------------------------------------
+	// Permet d'inclure un bouton dans la barre d'outils afin de changer d'application
+	LanguageButton: {
+		Enabled: /*Activé*/ false,
+		Image: "images/language_EN.png",
+		Title: /*Titre*/ "Afficher l'application en anglais",
+		AppURL: /*URL de l'application*/ "http://votresiteweb..."
+	},
+		  
     // ------------------------------------------------------------------------------------------------------------------------
     // CONFIGURATION POUR LE PARTAGE DE LA CARTE
     // ------------------------------------------------------------------------------------------------------------------------
@@ -333,12 +352,5 @@ dojo.declare("js.config", null, {
               
               FacebookShareURL: /*URL de partage de Facebook*/ "http://www.facebook.com/sharer.php",
               TwitterShareURL: /*URL de partage Twitter*/ "http://twitter.com/share"
-          },
-          
-    //-------------------------------------------------------------------------------------------------------------------------
-    // LES CARTES WEB NE SONT PLUS COMPATIBLE DEPUIS LA VERSION 10.2
-    //-------------------------------------------------------------------------------------------------------------------------
-    // Les cartes web ne sont pas compatibles depuis la version 10.2 de l'application des résultats électoraux. Veuillez utiliser des services de cartes. Ne changez pas la valeur de "UseWebMap" ou "WebMapId".
-    UseWebmap: false,
-    WebMapId: ""
+          }
 });

@@ -2,8 +2,8 @@
 /** @license
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -27,7 +27,7 @@ dojo.declare("js.config", null, {
     //
     // Use this file to perform the following:
     //
-    // 1.  Specify application title                  - [ Tag(s) to look for: ApplicationName, WindowTitle ]
+    // 1.  Specify application title and icon         - [ Tag(s) to look for: ApplicationName, WindowTitle, ApplicationIcon ]
     // 2.  Set splash screen message                  - [ Tag(s) to look for: SplashScreenMessage ]
     // 3.  Set URL for help page                      - [ Tag(s) to look for: HelpURL ]
     //
@@ -51,11 +51,13 @@ dojo.declare("js.config", null, {
     // 10. Configure data to be displayed for election updates
     //                                                - [Tag(s) to look for: Updates]
     //
-    // 11. Specify URLs for map sharing:
-    // 11a.In case of changing the TinyURL service
+	// 11. Configure the Language Toggle Button       - [ Tag(s) to look for: LanguageButton ]
+	//
+    // 12. Specify URLs for map sharing:
+    // 12a.In case of changing the TinyURL service
     //      Specify URL for the new service           - [ Tag(s) to look for: MapSharingOptions (set TinyURLServiceURL, TinyURLResponseAttribute) ]
-    // 11b. Specify the share settings                - [ Tag(s) to look for: TwitterStatus, TwitterHashtag, TwitterFollow, EmailSubject ]
-    // 11c. Specify the Facebook/Twitter URL in case of change to URL
+    // 12b. Specify the share settings                - [ Tag(s) to look for: TwitterStatus, TwitterHashtag, TwitterFollow, EmailSubject ]
+    // 12c. Specify the Facebook/Twitter URL in case of change to URL
     //                                                - [ Tag(s) to look for: FacebookURL, TwitterShareURL ]
     //
 
@@ -65,6 +67,9 @@ dojo.declare("js.config", null, {
     // Set application title
     ApplicationName: "Election Results",
 	WindowTitle: "Election Results",
+	
+	// Set the appliction icon path
+	ApplicationIcon: "images/appIcon.png",
 
     // Set splash window content - Message that appears when the application starts
     SplashScreenMessage: "<b>Election Results</b><br/><hr/><br/>The <b>Election Results</b> application provides a map-based view of voting results tabulated on election night for each polling division. To display the results, enter an address or polling division number in the search box or click on the map. The polling division will be highlighted and the voting results will be displayed in the tab along the bottom of the map.<br/><br/>",
@@ -141,21 +146,24 @@ dojo.declare("js.config", null, {
     LocatorSettings: {
         Locators: [
                 {
-                    DisplayText: "Address ",
-                    LocatorParamaters: ["SingleLine"],
-                    LocatorURL: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
-                    CandidateFields: "Loc_name, Score, Match_addr",
-                    DisplayField: "${Match_addr}",
-                    ZoomLevel: 7,
-                    AddressMatchScore: 80,
-                    LocatorFieldName: 'Loc_name',
-                    LocatorFieldValues: ["CAN.StreetName" , "CAN.PointAddress", "CAN.StreetAddress", "CAN.PostalExt"],
-                    //CanMod: Set the extent to be used when searching for an address, set wkid to 0000 in order to search whole of North America
-                    //CGS_WGS_1984: Use wkid 4326 and decimal degrees; WGS_1984_Web_Mercator: Use wkid 3785 and metres; Other systems not supported
-                    SearchExtent: {xmin: -8865402.789852107, ymin: 5443102.360231639, xmax: -8807068.937666388, ymax: 5400828.978730424, wkid: 3785}
+					DisplayText: "Search for an address",
+					LabelText: "Address",
+					Example: "Try searching for a street address such as '12 Concorde Place'",
+					LocatorURL: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+					LocatorParamaters: ["SingleLine"],
+					CandidateFields: "Loc_name, Score, Match_addr",
+					DisplayFieldCML2: "Match_addr",
+					AddressMatchScore: 80,
+					LocatorFieldName: 'Loc_name',
+					LocatorFieldValues: ["CAN.StreetName" , "CAN.PointAddress", "CAN.StreetAddress", "CAN.PostalExt"],
+					//CanMod: Set the extent to be used when searching for an address, set wkid to 0000 in order to search whole of North America
+					//CGS_WGS_1984: Use wkid 4326 and decimal degrees; WGS_1984_Web_Mercator: Use wkid 3785 and metres; Other systems not supported
+					SearchExtent: {xmin: -8865402.789852107, ymin: 5443102.360231639, xmax: -8807068.937666388, ymax: 5400828.978730424, wkid: 3785}
                 },
                 {
-                    DisplayText: "Division ",
+                    DisplayText: "Search for a division ID",
+					LabelText: "Division",
+					Example: "Division ID's are 5 digit numbers",
                     SampleSearchString: "01001"
                 }
             ]
@@ -292,10 +300,10 @@ dojo.declare("js.config", null, {
          },
 
     //Set the colour for those who voted (in the pie chart)
-    VotedColor: "#CCD9D2",
+    VotedColor: "#66736D",
 
     //Set the colour for those who did not vote (in the pie chart)
-    DidNotVoteColor: "#66736D",
+    DidNotVoteColor: "#CCD9D2",
 
     // ------------------------------------------------------------------------------------------------------------------------
     //SETTING FOR ELECTION UPDATES
@@ -310,6 +318,17 @@ dojo.declare("js.config", null, {
               //Specify the field name for last update
               FieldName: "LASTUPDATE"
           },
+	
+	// ------------------------------------------------------------------------------------------------------------------------
+	// LANGUAGE TOGGLE BUTTON
+	// ------------------------------------------------------------------------------------------------------------------------
+	// Allows you to include a toggle button in the toolbar to switch between two version of the application
+	LanguageButton: {
+		Enabled: false,
+		Image: "images/language_FR.png",
+		Title: "Switch to French Application",
+		AppURL: "http://yourwebsite..."
+	},
 
     // ------------------------------------------------------------------------------------------------------------------------
     // SETTINGS FOR MAP SHARING
@@ -333,12 +352,5 @@ dojo.declare("js.config", null, {
               
               FacebookShareURL: "http://www.facebook.com/sharer.php",
               TwitterShareURL: "http://twitter.com/share"
-          },
-          
-    //-------------------------------------------------------------------------------------------------------------------------
-    // WEBMAPS ARE NOT SUPPORTED AT 10.2, SEE DETAILS BELOW
-    //-------------------------------------------------------------------------------------------------------------------------
-    // WebMaps are not supported with the 10.2 version of the Polling Place Locator application. Please use Map Services for operational layers. Do not change the "UseWebmap" and "WebMapId" parameters.
-    UseWebmap: false,
-    WebMapId: ""
+          }
 });

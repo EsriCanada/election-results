@@ -1,4 +1,8 @@
 ﻿/** @license
+ |
+ |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |
  | Version 10.2
  | Copyright 2012 Esri
  |

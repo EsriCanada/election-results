@@ -2,8 +2,8 @@
 <!--ENGLISH
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -32,4 +32,5 @@
     <positionUnavailable>Position unavailable.</positionUnavailable>
     <permissionDenied>Permission denied.</permissionDenied>
     <unknownError>Unknown error.</unknownError>
+	<invalidSearch>No results found.</invalidSearch>
 </Messages>

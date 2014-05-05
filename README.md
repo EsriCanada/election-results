@@ -5,6 +5,9 @@ The Election Results application provides a map-based view of voting results tab
 
 The application is highly configurable and works with the [Canadian Municipal Data Model](http://www.arcgis.com/home/item.html?id=0487111bd16a4c2ca757687d588aa783 "Download the Data Model").  It can be deployed and used on desktop, smartphones or tablet devices.
 
+### En français
+Vous trouverez la documentation en français dans la [gallérie d’ArcGIS Online](http://www.arcgis.com/home/item.html?id=cce7b61da118417aa4e36696969698cb).
+
 ### Try it Live
 
 A preview of this application is available in [English](http://apps.esri.ca/ElectionResults/ "Try it live") and [French](http://apps.esri.ca/ElectionResults/fr "Essayer l'application en français").

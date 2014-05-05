@@ -1,8 +1,8 @@
 /** @license
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2013 Esri
@@ -22,7 +22,8 @@
 dojo.require("esri.map");
 dojo.require("esri.tasks.geometry");
 dojo.require("dojox.mobile.parser");
-dojo.require("dojox.mobile");
+dojo.require("dojox.mobile.ListItem");
+dojo.require("dojox.mobile.EdgeToEdgeList");
 dojo.require("dojo.window");
 dojo.require("esri.tasks.locator");
 dojo.require("esri.tasks.query");
@@ -35,6 +36,10 @@ dojo.require("dojo.date.locale");
 dojo.require("js.date");
 dojo.require("esri.geometry.Extent"); //CanMod
 dojo.require("esri.SpatialReference"); //CanMod
+
+//Load internationlization object
+var intl;
+require(["dojo/i18n!js/nls/text"],function(i18n) {intl = i18n;});
 
 var map;  //variable to store map object
 
@@ -71,64 +76,65 @@ var referenceOverlayLayer; //variable to store the reference overlay layer
 var updates; //variable to store the time of last update
 var locatorSettings; //variable to store locator settings
 
-var lastSearchString; //variable for storing the last search string value
-var stagedSearch; //variable for storing the time limit for search
-var lastSearchTime; //variable for storing the time of last searched value
-
 var electionResultDataQuery;
 var arrowClick = false;
 
+var locatorSettings; //variable used to store address search setting
+var lastSearchString; //variable for store the last search string
+var lastSearchResults; //variable to store the last search candidates
+var timeouts = {}; //object to store timeout objects
+var searchType; //object to store which search is selected
+
 var piechartProportions; //CanMod: Store whether proportions or percents are used for piecharts
-var buttonFlash; //CanMod: Store the search button setInterval method
 
 //This initialization function is called when the DOM elements are ready
 function init() {
-	Internationalization(false); //CanMod: Launch the internationalization function in internationalization.js (variable creation only)
-
     esri.config.defaults.io.proxyUrl = "proxy.ashx";        //Setting to use proxy file
     esriConfig.defaults.io.alwaysUseProxy = false;
     esriConfig.defaults.io.timeout = 180000;    //Esri request timeout value
 
     if (!Modernizr.geolocation) {
-        dojo.byId("tdGps").style.display = "none";
+        dojo.byId("geoBtn").style.display = "none";
     }
 
-    var userAgent = window.navigator.userAgent;
-    if (userAgent.indexOf("iPhone") >= 0 || userAgent.indexOf("iPad") >= 0) {
-        isiOS = true;
-    }
-
-    if (userAgent.indexOf("Android") >= 0 || userAgent.indexOf("iPhone") >= 0) {
-        isMobileDevice = true;
-        dojo.byId('dynamicStyleSheet').href = "styles/mobile.css";
-        dojo.byId('divSplashContent').style.fontSize = "15px";
-    }
-    else if (userAgent.indexOf("iPad") >= 0) {
+	//As of 2013, detects: Mobile: iOS/iPhone, Android Mobile, Blackberry Phone, Windows Phone, Symbian OS, Firefox OS, Opera Mini/Mobile
+	//                     Tablet: iOS/iPad, Android Tablet, Blackberry Playbook, Windows RT (Microsoft Surface RT, Asus VivoTab RT, Dell XPS, Lumia Tablets...)
+	//                     Browser: All others including Windows 7/8 tablets
+    var userAgent = window.navigator.userAgent.toLowerCase(); //used to detect the type of devices
+	if (userAgent.indexOf("ipad") >= 0) {
+		isiOS = true;
+		dojo.byId('divSplashContent').style.fontSize = "14px";
         isTablet = true;
         dojo.byId('dynamicStyleSheet').href = "styles/tablet.css";
-        dojo.byId('divSplashContent').style.fontSize = "14px";
-    }
-    else {
+    } else if (userAgent.indexOf("iphone") >= 0) {
+        isiOS = true;
+		dojo.byId('divSplashContent').style.fontSize = "15px";
+        isMobileDevice = true;
+        dojo.byId('dynamicStyleSheet').href = "styles/mobile.css";
+    } else if (userAgent.indexOf("mobile") >= 0 || userAgent.indexOf("opera mini") >= 0 || userAgent.indexOf("opera mobi") >= 0 || userAgent.indexOf("symbian") >= 0) {
+		dojo.byId('divSplashContent').style.fontSize = "15px";
+        isMobileDevice = true;
+        dojo.byId('dynamicStyleSheet').href = "styles/mobile.css";
+    } else if (userAgent.indexOf("tablet") >= 0 || /*Android not mobile*/ userAgent.indexOf("android") >= 0 || (/*Windows RT*/ userAgent.indexOf("windows") >= 0 && userAgent.indexOf("arm") >= 0)) {
+		dojo.byId('divSplashContent').style.fontSize = "14px";
+        isTablet = true;
+        dojo.byId('dynamicStyleSheet').href = "styles/tablet.css";
+    } else {
+        dojo.byId('divSplashContent').style.fontSize = "11px";
         isBrowser = true;
         dojo.byId('dynamicStyleSheet').href = "styles/browser.css";
-        dojo.byId('divSplashContent').style.fontSize = "11px";
     }
 
     if (isMobileDevice) {
         dojo.byId('divSplashScreenDialog').style.width = "95%";
         dojo.byId('divSplashScreenDialog').style.height = "95%";
-        dojo.byId('divAddressContainer').style.display = "none";
-        dojo.replaceClass("divAddressContainer", "", "hideContainer");
-        dojo.byId("divLogo").style.display = "none";
         dojo.byId("divBottomPanelHeader").style.display = "none";
         dojo.byId("divBottomPanelBody").style.display = "none";
         dojo.byId("lblAppName").style.display = "none";
-        dojo.byId("lblAppName").style.width = "80%";
     }
     else {
         dojo.byId('divSplashScreenDialog').style.width = "350px";
         dojo.byId('divSplashScreenDialog').style.height = "290px";
-        dojo.byId("divLogo").style.display = "none";
     }
 
     var responseObject = new js.config();
@@ -143,7 +149,6 @@ function init() {
     votedColor = responseObject.VotedColor;
     didNotVoteColor = responseObject.DidNotVoteColor;
     referenceOverlayLayer = responseObject.ReferenceOverlayLayer;
-    //dojo.byId('imgApplication').src = responseObject.ApplicationIcon; //CanMod: Logo no longer used
     updates = responseObject.Updates;
     dojo.byId('divSplashContent').innerHTML = responseObject.SplashScreenMessage;
     locatorSettings = responseObject.LocatorSettings;
@@ -151,133 +156,80 @@ function init() {
 	piechartProportions = responseObject.PiechartProportions; //CanMod: Retreive proportions/percent option
 	document.title = responseObject.WindowTitle; //CanMod: Change the document title to the one specified in the config page
 	
-    dojo.connect(dojo.byId("txtAddress"), 'onkeyup', function (evt) {
-        if (evt) {
-            if (evt.keyCode == dojo.keys.ENTER) {
-                if (dojo.byId("txtAddress").value != '') {
-                    dojo.byId("imgSearchLoader").style.display = "block";
-                    LocateAddress();
-                    return;
-                }
-            }
-            if (!((evt.keyCode >= 46 && evt.keyCode < 58) || (evt.keyCode > 64 && evt.keyCode < 91) || (evt.keyCode > 95 && evt.keyCode < 106) || evt.keyCode == 8 || evt.keyCode == 110 || evt.keyCode == 188)) {
-                evt = (evt) ? evt : event;
-                evt.cancelBubble = true;
-                if (evt.stopPropagation) evt.stopPropagation();
-                return;
-            }
-            if (dojo.coords("divAddressContent").h > 0) {
-                if (dojo.byId("txtAddress").value.trim() != '') {
-                    if (lastSearchString != dojo.byId("txtAddress").value.trim()) {
-                        lastSearchString = dojo.byId("txtAddress").value.trim();
-                        RemoveChildren(dojo.byId('tblAddressResults'));
-
-                        // Clear any staged search
-                        clearTimeout(stagedSearch);
-
-                        if (dojo.byId("txtAddress").value.trim().length > 0) {
-                            // Stage a new search, which will launch if no new searches show up
-                            // before the timeout
-                            stagedSearch = setTimeout(function () {
-                                dojo.byId("imgSearchLoader").style.display = "block";
-                                LocateAddress();
-                            }, 500);
-                        }
-                    }
-                } else {
-                    lastSearchString = dojo.byId("txtAddress").value.trim();
-                    dojo.byId("imgSearchLoader").style.display = "none";
-                    RemoveChildren(dojo.byId('tblAddressResults'));
-                    CreateScrollbar(dojo.byId("divAddressScrollContainer"), dojo.byId("divAddressScrollContent"));
-                }
-            }
-        }
-    });
-
-    dojo.connect(dojo.byId("txtAddress"), 'onpaste', function (evt) {
-        setTimeout(function () {
-            LocateAddress();
-        }, 100);
-    });
-
-    dojo.connect(dojo.byId("txtAddress"), 'oncut', function (evt) {
-        setTimeout(function () {
-            LocateAddress();
-        }, 100);
-    });
-
-    dojo.byId("tdsearchAddress").innerHTML = responseObject.LocatorSettings.Locators[0].DisplayText;
-    dojo.byId("tdSearchPrecinct").innerHTML = responseObject.LocatorSettings.Locators[1].DisplayText;
+	//Display language toggle button if required
+	if (responseObject.LanguageButton.Enabled && !isMobileDevice) {
+		var langB = document.getElementById("imgLang");
+		langB.src = responseObject.LanguageButton.Image;
+		langB.alt = responseObject.LanguageButton.Title;
+		langB.title = responseObject.LanguageButton.Title;
+		
+		dojo.connect(langB, "onclick", function() {
+			window.location.href = responseObject.LanguageButton.AppURL;
+		});
+		dojo.connect(langB, "onkeydown", function (evt) {
+			var kc = evt.keyCode;
+			if (kc == dojo.keys.ENTER || kc == dojo.keys.SPACE) {
+				window.location.href = responseObject.LanguageButton.AppURL;
+			}
+		});
+		
+		langB.style.display = "inline";
+	}
+	
+	// Initialize search module*/
+	dojo.query("[for='searchAddress']")[0].innerHTML = responseObject.LocatorSettings.Locators[0].LabelText;
+	dojo.query("[for='searchRequest']")[0].innerHTML = responseObject.LocatorSettings.Locators[1].LabelText;
+	if (isMobileDevice) {
+		dojo.byId('imgSearch').style.display = "inline";
+		dojo.replaceClass(dojo.byId("divAddressSearch"),"searchBlock","searchInline");
+		document.getElementById("searchTitle").innerHTML = responseObject.LocatorSettings.Locators[0].DisplayText;
+		document.getElementById("searchTitle").style.display = "block";
+		dojo.byId("radioDiv").style.display = "block";
+		dojo.byId("inputDiv").style.display = "block";
+    } else {
+		if (dojo.isIE <= 7 || isTablet) {
+			dojo.byId('imgSearch').style.display = "inline";
+			dojo.replaceClass(dojo.byId("divAddressSearch"),"searchBlock","searchInline");
+			document.getElementById("searchTitle").innerHTML = responseObject.LocatorSettings.Locators[0].DisplayText;
+			document.getElementById("searchTitle").style.display = "block";
+			dojo.byId("radioDiv").style.display = "block";
+			dojo.byId("inputDiv").style.display = "block";
+		}
+		else {
+			if (dojo.isIE <=9) {
+				document.getElementById("searchInput").value = responseObject.LocatorSettings.Locators[0].DisplayText;
+				dojo.on.once(dojo.byId("searchInput"),"focus",function() {document.getElementById("searchInput").value = "";});
+			}
+			document.getElementById("searchInput").setAttribute("placeholder", responseObject.LocatorSettings.Locators[0].DisplayText);
+			dojo.byId('divAddressSearch').style.display = "inline-block";
+		}
+		//Prevent map from moving when selecting an autocomplete option with the arrow keys and the mouse is on top of the map
+		require(["dojo/on"],function(on) {
+			on(dojo.byId("searchInput"),"focus", function	() {
+				map.disableKeyboardNavigation();
+			});
+			on(dojo.byId("searchInput"),"blur", function() {
+				map.enableKeyboardNavigation();
+			});
+		});
+	}
+	dojo.forEach(dojo.query("[name='searchType']"), function(item,i) {
+		item.onclick = function() {searchChange(responseObject.LocatorSettings);}
+	});
+	searchChange(responseObject.LocatorSettings); //set placeholder text & searchType variable (FF does not reset forms on page refresh)
 
     geometryService = new esri.tasks.GeometryService(responseObject.GeometryService);
 
     locator = new esri.tasks.Locator(responseObject.LocatorSettings.Locators[0].LocatorURL);
 
-    dojo.byId("lblAppNameText").innerHTML = responseObject.ApplicationName; //CanMod
-    dojo.connect(dojo.byId('imgHelp'), "onclick", function () {
+    dojo.byId("lblAppName").innerHTML = "<img alt='' src='" + responseObject.ApplicationIcon + "'>" + responseObject.ApplicationName;
+    dojo.connect(dojo.byId('helpBtn'), "onclick", function () {
         window.open(responseObject.HelpURL);
-    });
-    dojo.byId("txtAddress").setAttribute("defaultAddress", ""); //CanMod: Start off with empty defaults, preventing a default text box value
-    dojo.byId("txtAddress").setAttribute("defaultPrecinct", ""); //CanMod: Start off with empty defaults, preventing a default text box value
-    //dojo.byId("txtAddress").value = responseObject.LocatorSettings.Locators[0].LocatorDefaultAddress; //CanMod: Setting does not exist anymore
-    lastSearchString = dojo.byId("txtAddress").value.trim();
-    dojo.connect(dojo.byId('txtAddress'), "ondblclick", ClearDefaultText);
-    dojo.connect(dojo.byId('txtAddress'), "onblur", ReplaceDefaultText);
-    dojo.connect(dojo.byId('txtAddress'), "onfocus", function (evt) {
-        this.style.color = "#FFF";
     });
     ShowProgressIndicator('map');
 
-    if (responseObject.UseWebmap) {
-        var webMapData = getWebMapInfo("electionResultsKey", responseObject.WebMapId);
-        webMapData.addCallback(function (webMapDetails) {
-            electionResultData = {};
-            referenceOverlayLayer.ServiceURL = webMapDetails.basemap.url;
-            for (var i = 0; i < webMapDetails.operationalLayers.length; i++) {
-                if (webMapDetails.operationalLayers[i].popupInfo) {
-                    if (webMapDetails.operationalLayers[i].popupInfo.mediaInfos.length > 0) {
-                        electionResultData[webMapDetails.operationalLayers[i].id] = {};
-                        electionResultData[webMapDetails.operationalLayers[i].id]["Title"] = dojo.trim(webMapDetails.operationalLayers[i].title.split("-")[1]);
-                        electionResultData[webMapDetails.operationalLayers[i].id]["HeaderColor"] = "#393939";
-                        electionResultData[webMapDetails.operationalLayers[i].id]["ServiceURL"] = webMapDetails.operationalLayers[i].url;
-                        electionResultData[webMapDetails.operationalLayers[i].id]["ChartData"] = [];
-                        electionResultData[webMapDetails.operationalLayers[i].id]["PartyDetails"] = [];
-                        electionResultData[webMapDetails.operationalLayers[i].id]["CandidateNames"] = [];
-                        electionResultData[webMapDetails.operationalLayers[i].id]["DisplayOnLoad"] = webMapDetails.operationalLayers[i].visibility;
-                        for (var fieldInfo in webMapDetails.operationalLayers[i].popupInfo.fieldInfos) {
-                            if (webMapDetails.operationalLayers[i].popupInfo.fieldInfos[fieldInfo].visible) {
-                                electionResultData[webMapDetails.operationalLayers[i].id]["TotalBallots"] = webMapDetails.operationalLayers[i].popupInfo.fieldInfos[fieldInfo].fieldName;
-                                break;
-                            }
-                        }
+	Initialize(responseObject.DefaultExtent);
 
-                        for (var x in webMapDetails.operationalLayers[i].popupInfo.mediaInfos[0].value.fields) {
-                            electionResultData[webMapDetails.operationalLayers[i].id]["ChartData"].push(webMapDetails.operationalLayers[i].popupInfo.mediaInfos[0].value.fields[x]);
-                        }
-                        var results = webMapDetails.operationalLayers[i].popupInfo.mediaInfos[0].caption.split(/\r\n|\r|\n/);
-                        for (var index in results) {
-                            var val = results[index].replace(/\{/g, '');
-                            val = val.split("}");
-                            if (val.length > 1) {
-                                electionResultData[webMapDetails.operationalLayers[i].id]["PartyDetails"].push(val[1]);
-                                electionResultData[webMapDetails.operationalLayers[i].id]["CandidateNames"].push(val[0]);
-                            }
-                        }
-                        electionResultData[webMapDetails.operationalLayers[i].id]["ChartType"] = webMapDetails.operationalLayers[i].popupInfo.mediaInfos[0].type;
-                    }
-                    else {
-                        precinctLayer.Key = webMapDetails.operationalLayers[i].id;
-                        precinctLayer.ServiceURL = webMapDetails.operationalLayers[i].url;
-                        precinctLayer.UseColor = true;
-                    }
-                }
-            }
-            Initialize(responseObject.DefaultExtent);
-        });
-    }
-    else {
-        Initialize(responseObject.DefaultExtent);
-    }
     dojo.xhrGet({
         url: "errorMessages.xml",
         handleAs: "xml",
@@ -291,7 +243,7 @@ function init() {
             dojo.stopEvent(e);
         }
     });
-	Internationalization(true); //CanMod: Launch the internationalization function in internationalization.js along with the code block
+	internationalization();
 }
 
 //function to initialize map after reading the config settings
@@ -335,7 +287,7 @@ function Initialize(defaultExtent) {
         mapExtent = new esri.geometry.Extent(parseFloat(mapExtent[0]), parseFloat(mapExtent[1]), parseFloat(mapExtent[2]), parseFloat(mapExtent[3]), map.spatialReference);
         map.setExtent(mapExtent);
         if (precinct) {
-            SearchPrecinctName(unescape(precinct), true);
+            locateDivisionCML2(unescape(precinct), true);
             return;
         }
     });
@@ -543,24 +495,15 @@ function CreateElectionResultLayOut() {
 
             var dataContainerHeader = dojo.query(".spanHeader", dataContainerNode)[0];
             dataContainerHeader.innerHTML = electionResultData[index].Title;
-            var dataContainer = dojo.query(".divContentStyle", dataContainerNode);
-            dataContainer[0].id = "div" + index + "container";
-            dataContainer[1].id = "div" + index + "content";
-
-            td.appendChild(dataContainerNode);
-
-            var candidateLinktd = document.createElement("td");
-            candidateLinktd.id = "tdContest" + index;
-            candidateLinktd.setAttribute("candidateLinkId", index);
-            candidateLinktd.setAttribute("position", numberOfContests);
+			
+			//--CanMod: Moved links to display specific races from bottom of pods to the header of each pod
+			var fullHeader = dojo.query(".divTemplateHeader", dataContainerNode)[0];
+            fullHeader.id = "tdContest" + index;
+            fullHeader.setAttribute("candidateLinkId", index);
+            fullHeader.setAttribute("position", numberOfContests);
             numberOfContests++;
-            candidateLinktd.style.borderRight = "1px solid white";
-            candidateLinktd.style.fontSize = "10px";
 
-            var divCandidateLink = document.createElement("div");
-            divCandidateLink.id = "divContest" + index;
-            candidateLinktd.appendChild(divCandidateLink);
-            candidateLinktd.onclick = function () {
+            fullHeader.onclick = function () {
                 //map.setExtent(map.getLayer(precinctLayer.Key).fullExtent); //CanMod: Stop zoom out when layer changed
                 HideInformationContainer();
                 var key = this.getAttribute("candidateLinkId");
@@ -585,8 +528,13 @@ function CreateElectionResultLayOut() {
                 currentSelectedPrecinct = this.children[0].title;
                 //HideBottomPanel(); //CanMod: Stop panel from being hidden on map click
             }
+			
+            var dataContainer = dojo.query(".divContentStyle", dataContainerNode);
+            dataContainer[0].id = "div" + index + "container";
+            dataContainer[1].id = "div" + index + "content";
+
+            td.appendChild(dataContainerNode);
             dojo.byId("trElectionResults").appendChild(td);
-            dojo.byId("trElectionContest").appendChild(candidateLinktd);
             map.addLayer(CreateDynamicMapServiceLayer(index, electionResultData[index].ServiceURL));
 
             if (electionResultData[index].DisplayOnLoad && !currentSelectedLayer) {
@@ -597,16 +545,34 @@ function CreateElectionResultLayOut() {
                 map.getLayer(index).hide();
             }
         }
-        FixWidthBottomPanel();
     }
 
     //Event handler for map click to fetch the contest details for the selected precinct
     dojo.connect(map, "onClick", function (evt) {
-		StopFlashSearchButton(); //CanMod: Stop search button flashing when map click event occurs
         map.infoWindow.hide();
         evt.mapPoint.spatialReference = map.spatialReference;
         FindPrecinctLayer(evt.mapPoint, null, (!currentSelectedLayer) ? true : false);
     });
+}
+
+//Internationlization of pre-loaded content
+function internationalization() {
+	dojo.byId("tdTitle").innerHTML = intl.divisionLabel;
+	
+	dojo.byId("searchLegend").innerHTML = intl.searchTitle;
+	dojo.byId("searchSubmit").title = intl.searchTooltip;
+	
+	dojo.byId("shareBtn").title = intl.shareTooltip;
+	dojo.byId("shareTitle").innerHTML = intl.shareTitle;
+	dojo.byId("emailButton").title = intl.emailTooltip;
+	
+	dojo.byId("divToggle").title = intl.hideTooltip;
+	
+	dojo.byId("closeSplashButton").innerHTML = intl.closeSplashButton;
+	dojo.byId("closeButton").title = intl.closeTooltip;
+	dojo.query("#divInfowindowContent img")[0].title = intl.closeTooltip;
+	dojo.byId("geoBtn").title = intl.geolocateTooltip;
+	dojo.byId("helpBtn").title = intl.helpTooltip;
 }
 
 dojo.addOnLoad(init);

@@ -1,8 +1,8 @@
 ﻿/*
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0 / Résultats électoraux v10.2.0
- |This file was modified by Esri Canada - Copyright 2013 Esri Canada
+ |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
  | Copyright 2012 Esri
@@ -21,30 +21,6 @@
  */
 /* This file contains the common style settings for "Election Results" template */
 /* Other platform specific style settings can be found in browser.css, tablet.css, and mobile.css */
-/* Use this file to perform the following: */
-
-/* 1.  Set the body styles                      - { Style(s) to look for: html, body, roundedCorner } */
-/* 2.  Set styles for splash screen             - { Style(s) to look for: divSplashScreenContainer,divSplashScreenDialog,divSplashScreenDialogContent,divSplashContent,
-                                                                          divSplashContainer,customButton } */
-/* 3.  Set the styles for Election Result Updates
-                                                - { Style(s) to look for: divResultsUpdateInfo}*/
-/* 4.  Set the styles for animations            - { Style(s) to look for: slideTransition,hideHeaderContainer,showHeaderContainer,hideBottomContainer,showBottomContainer,
-                                                                          hideContainer,showContainer,hideContainerHeight,showContainerHeight,opacityHideAnimation,
-                                                                          opacityShowAnimation,esriLogo}*/
-/* 5.  Set the styles for share container       - { Style(s) to look for: divShareContainer,divShareContentHolder}*/
-/* 6.  Set the styles for application header    - { Style(s) to look for: lblAppName,imgOptions,tableHeader,imgApplication,divApplicationHeader,divLogo}*/
-/* 7.  Set the styles for search container      - { Style(s) to look for: divAddressScrollContainer,divAddressScrollContent,tblHeader,divAddressPlaceHolder,txtAddress,
-                                                                          imgLocate,divAddressList,tdSearchByAddress,tdSearchByPrecinct,tdSearchByUnSelectedPrecinct,
-                                                                          tdSearchByUnSelectedAddress,bottomborder}*/
-/* 8.  Set the styles for bottom panel          - { Style(s) to look for: divBottomPanelHeader,divBottomPanelBody,divTemplateBox,divTemplateHeader,spanHeader,
-                                                                          divContentStyle,divElectionResultsContainer,divElectionContestContainer,
-                                                                          divElectionResultsContent,divElectionContestContent,divElectionContestContent,
-                                                                          divElectionResultsView,border}*/
-/* 9.  Set the styles for info window           - { Style(s) to look for: divInfoWindowContainer,divTriangle,dj_ie .divInfoWindowContainer,
-                                                                          divInfoWindowContainer .container,imgInfoWindow,divInfoWindowContainer .content,
-                                                                          divInfoWindowContainer .title,imgArrow}*/
-/* 10. Set the styles for Esri slider           - { Style(s) to look for: esriSimpleSlider}*/
-/* 11. Set the styles for loading indicator     - { Style(s) to look for: divLoadingIndicator}*/
 
 /*------------------------------------------------------------------------------------------------------------*/
 
@@ -92,7 +68,7 @@ html, body
 {
     text-align: left;
     z-index: 1000;
-    background-color: black;
+    background-color: #468544;
 }
 
 .divSplashScreenDialogContent
@@ -100,10 +76,6 @@ html, body
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    -webkit-box-shadow: 0 0 10px #fff;
-    -moz-box-shadow: 0 0 10px #fff;
-    -o-box-shadow: 0 0 10px #fff;
-    box-shadow: 0 0 10px #fff;
     behavior: url("styles/PIE.htc");
 }
 
@@ -146,14 +118,10 @@ html, body
     text-align: left;
     padding: 2px;
     z-index: 100;
-    background-color: #38A445; /*CanMod*/
+    background-color: #468544; /*CanMod*/
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
     border-radius: 8px;
-    -webkit-box-shadow: 0 0 10px #fff;
-    -moz-box-shadow: 0 0 10px #fff;
-    -o-box-shadow: 0 0 10px #fff;
-    box-shadow: 0 0 10px #fff;
 }
 
 /*------------------------------------------------------------------------------------------------------------*/
@@ -329,8 +297,8 @@ html, body
 
 .divShareContentHolder
 {
-    background: #38A445; /*CanMod*/
-    -pie-background: #38A445; /*CanMod*/
+    background: #468544; /*CanMod*/
+    -pie-background: #468544; /*CanMod*/
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -341,9 +309,33 @@ html, body
 
 /*Styles for application header */
 
-.lblAppName
-{
-    padding-left: 10px; /*CanMod*/
+#lblAppName {
+	height: 45px;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	font-size: 24px;
+}
+
+#lblAppName img {
+	height: 40px;
+	width: auto;
+	vertical-align: middle;
+	padding: 2px 4px;
+}
+
+
+#divButtons {
+	float:right;
+	height:100%;
+	padding: 4px 0px 0px 10px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	white-space:nowrap;
+}
+
+#divButtons .imgOptions {
+	margin-right: 3px;
 }
 
 .imgOptions
@@ -359,57 +351,24 @@ html, body
     height: 100%;
 }
 
-.imgApplication
-{
-    width: 64px;
-}
-
 .divApplicationHeader
 {
     vertical-align: middle;
-    background: #38A445; /*CanMod*/
-    -pie-background: #38A445; /*CanMod*/
+    background: #468544; /*CanMod*/
+    -pie-background: #468544; /*CanMod*/
     behavior: url("styles/PIE.htc");
     top: 0px;
     height: 45px; /*CanMod*/
     width: 100%;
     position: absolute;
-    z-index: 1000;
-    overflow: hidden;
-    font-size: 24px;
-    z-index: 1000;
+    z-index: 1006;
 }
-
-.divLogo
-{
-    position: absolute !important;
-    top: 0px;
-    left: 0px;
-    width: 75px;
-    height: 75px;
-    z-index: 10000;
-    display: none;
-}
-
 /*------------------------------------------------------------------------------------------------------------*/
 
-/*Styles for search container*/
-
-.divAddressScrollContainer
-{
-    overflow: hidden;
-    position: relative;
-}
-
-.divAddressScrollContent
-{
-    overflow: hidden;
-    width: 95%;
-}
-
+/*Styles for Bottom panel */
 .tblHeader
 {
-    background-color: #393939;
+    background-color: #468544;
     -moz-border-radius-topleft: 10px;
     -moz-border-radius-topright: 10px;
     -moz-border-radius-bottomleft: 0px;
@@ -422,134 +381,7 @@ html, body
     border-top-right-radius: 7px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    border-bottom: gray 1px solid;
 }
-
-.divAddressPlaceHolder
-{
-    border: 1px solid #242424;
-    background-color: #333333;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    position: relative;
-}
-
-.txtAddress
-{
-    vertical-align: middle;
-    background-color: #333333;
-    color: gray;
-    border: none !important;
-    outline: none;
-    padding: 0px !important;
-    line-height: 30px;
-}
-
-.imgLocate
-{
-    cursor: pointer;
-    position: absolute;
-}
-
-.divAddressList
-{
-    color: #fff;
-    z-index: 101;
-    background-color: transparent;
-    border: none;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    margin-top: 5px;
-}
-
-.imgSearchLoader
-{
-    vertical-align: middle;
-    display: none;
-    cursor: default;
-}
-
-.tdSearchByAddress
-{
-    margin-left: 10px;
-    margin-right: 10px;
-    height: 25px;
-    min-width: 90px;
-    -moz-border-top-left-radius: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-bottom-left-radius: 5px;
-    -webkit-bottom-top-left-radius: 5px;
-    border-radius: 5px 0px 0px 5px;
-    text-align: center;
-    cursor: default;
-    background-color: #AAAAAA;
-}
-
-.tdSearchByPrecinct
-{
-    margin-left: 10px;
-    margin-right: 10px;
-    height: 25px;
-    text-align: center;
-    min-width: 90px;
-    cursor: default;
-    background-color: #AAAAAA;
-    -moz-border-top-right-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    border-top-right-radius: 5px;
-    border-radius: 0px 5px 5px 0px;
-    -moz-border-bottom-right-radius: 5px;
-    -webkit-bottom-top-right-radius: 5px;
-}
-
-.tdSearchByUnSelectedPrecinct
-{
-    margin-left: 10px;
-    margin-right: 10px;
-    height: 25px;
-    text-align: center;
-    min-width: 90px;
-    background: #202020; /* Old browsers */
-    cursor: pointer;
-    -moz-border-top-right-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    border-top-right-radius: 5px;
-    border-radius: 0px 5px 5px 0px;
-    -moz-border-bottom-right-radius: 5px;
-    -webkit-bottom-top-right-radius: 5px;
-}
-
-.tdSearchByUnSelectedAddress
-{
-    margin-left: 10px;
-    margin-right: 10px;
-    height: 25px;
-    min-width: 90px;
-    text-align: center;
-    background: #202020; /* Old browsers */
-    -moz-border-top-left-radius: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-bottom-left-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    border-radius: 5px 0px 0px 5px;
-    cursor: pointer;
-}
-
-.tdSearchByAddress, .tdSearchByPrecinct, .tdSearchByUnSelectedPrecinct, .tdSearchByUnSelectedAddress
-{
-    width: 90px;
-}
-.bottomborder
-{
-    border-bottom: 1px solid white;
-    text-align: left;
-}
-
-/*------------------------------------------------------------------------------------------------------------*/
-
-/*Styles for Bottom panel */
 
 .divBottomPanelHeader
 {
@@ -558,7 +390,7 @@ html, body
     left: 40px;
     width: 260px;
     z-index: 1000;
-    background-color: #38A445; /*CanMod*/
+    background-color: #468544; /*CanMod*/
 	border-top-left-radius: 8px; /*CanMod*/
 	border-top-right-radius: 8px; /*CanMod*/
     visibility: hidden;
@@ -571,8 +403,8 @@ html, body
     height: 0px;
     bottom: 0px;
     z-index: 1000;
-    background: #38A445; /*CanMod*/
-    -pie-background: #38A445; /*CanMod*/
+    background: #468544; /*CanMod*/
+    -pie-background: #468544; /*CanMod*/
     behavior: url("styles/PIE.htc");
 }
 
@@ -590,7 +422,7 @@ html, body
 {
     height: 35px;
     text-align: left;
-    background-color: rgb(57, 57, 57);
+    background-color: #B4C8B4;
     -moz-border-top-right-radius: 8px;
     -webkit-border-top-right-radius: 8px;
     border-top-right-radius: 8px;
@@ -601,6 +433,9 @@ html, body
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     border-bottom: gray 1px solid;
+	color: black;
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 .spanHeader
@@ -611,7 +446,7 @@ html, body
 
 .divContentStyle
 {
-    background-color: #585858;
+    background-color: #E6FAE6;
     height: 165px; /*CanMod*/
     font-family: Verdana;
     width: 100%;
@@ -621,47 +456,33 @@ html, body
     -webkit-border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+	color: black;
 }
 
 .divContentStyleOveride /*CanMod*/
 {
-	height: 175px;
+	height: 195px;
 }
 
 .divElectionResultsContainer
 {
-    height: 210px;
+    height: 230px;
     width: 100%;
     background-color: transparent;
     position: relative;
     overflow: hidden;
     z-index: 100;
     float: left;
+	margin-top: 10px;
 }
 
-.divElectionContestContainer
-{
-    height: 20px;
-    width: 100%;
-    background-color: transparent;
-    position: relative;
-    overflow: hidden;
-    z-index: 100;
-    float: left;
-}
-
-.divElectionResultsContent, .divElectionContestContent
+.divElectionResultsContent
 {
     float: left;
     z-index: 100;
     position: absolute;
     left: 0px;
     vertical-align: middle;
-}
-
-.divElectionContestContent
-{
-    height: 20px;
 }
 
 .divElectionResultsView
@@ -690,7 +511,7 @@ html, body
 {
     z-index: 1000;
     position: absolute;
-    background-color: #585858;
+    background-color: #468544;
     color: #fff;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -700,7 +521,7 @@ html, body
 .divTriangle
 {
     border: solid 20px transparent;
-    border-top-color: #585858;
+    border-top-color: #468544;
     border-bottom: 0;
     width: 0;
     height: 0;
@@ -737,14 +558,14 @@ html, body
 
 .divInfoWindowContainer .title
 {
-    background-color: #282828;
+    background-color: #468544;
     font-size: 13px;
     font-weight: bold;
     height: 20px;
     padding: 7px 2px 2px 7px !important;
     color: #fff;
     height: 25px;
-    background-color: #282828;
+    background-color: #468544;
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     -moz-border-radius-bottomleft: 0px;
@@ -757,7 +578,6 @@ html, body
     border-top-right-radius: 5px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    border-bottom: gray 1px solid;
 }
 
 .imgArrow
@@ -769,15 +589,6 @@ html, body
     top: 10px;
     height: 44px;
     width: 44px;
-}
-
-/*------------------------------------------------------------------------------------------------------------*/
-
-/*Styles for Esri slider */
-
-.esriSimpleSlider
-{
-    top: 90px !important;
 }
 
 /*------------------------------------------------------------------------------------------------------------*/
@@ -798,3 +609,84 @@ html, body
 }
 
 /*------------------------------------------------------------------------------------------------------------*/
+
+/* Search module */
+.searchInline {
+	display: inline-block;
+	height:40px;
+	vertical-align: top;
+	margin-right:5px;
+	margin-top: -3px;
+}
+
+#searchTitle {
+	font-weight: 700;
+	font-size: small;
+	text-align: center;
+}
+
+#searchInput {
+	width:228px;
+	border: thin dimgray solid;
+	font-size:16px;
+}
+
+#autocomplete {
+	background-color: white;
+	position: relative;
+	right: 0px;
+	z-index: 2000;
+	font-size: small;
+	color: black;
+}
+
+#autocomplete select {
+	width: 252px;
+	border: thin dimgray solid;
+	background-color: white;
+	margin:0px;
+}
+
+#autocomplete div {
+	border: thin dimgray solid;
+	background-color: white;
+	margin:0px;
+	width: 244px;
+	padding: 3px;
+	overflow: hidden;
+	white-space: pre-line;
+}
+
+#searchSubmit {
+	background: url(../images/search_mini.png) no-repeat center center;
+	background-color: white;
+	border: thin dimgray solid;
+	width: 20px;
+	height: 23px;
+	font-size:16px;
+}
+
+/*IE 7 Styling*/
+.searchBlock {
+	position: absolute;
+	right: 5px;
+	display:block;
+	background-color: #468544;
+	padding: 5px 10px 10px 10px;
+	vertical-align: top;
+}
+
+.searchBlock select{
+	width: 250px;
+	white-space: pre;
+	word-wrap: break-word;
+}
+
+.searchBlock #autocomplete {
+	background-color: #468544;
+}
+
+.searchBlock #searchInput {
+	position: relative;
+	top: 0px;
+}
