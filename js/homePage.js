@@ -1,7 +1,7 @@
 /** @license
  |
  |ArcGIS for Canadian Municipalities / ArcGIS pour les municipalités canadiennes
- |Election Results v10.2.0.1-Dev / Résultats électoraux v10.2.0.1-Dev
+ |Election Results v10.2.0.1 / Résultats électoraux v10.2.0.1
  |This file was modified by Esri Canada - Copyright 2014 Esri Canada
  |
  | Version 10.2
@@ -196,10 +196,6 @@ function init() {
 			dojo.byId("inputDiv").style.display = "block";
 		}
 		else {
-			if (dojo.isIE <=9) {
-				document.getElementById("searchInput").value = responseObject.LocatorSettings.Locators[0].DisplayText;
-				dojo.on.once(dojo.byId("searchInput"),"focus",function() {document.getElementById("searchInput").value = "";});
-			}
 			document.getElementById("searchInput").setAttribute("placeholder", responseObject.LocatorSettings.Locators[0].DisplayText);
 			dojo.byId('divAddressSearch').style.display = "inline-block";
 		}
