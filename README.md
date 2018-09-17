@@ -1,37 +1,20 @@
-### election-results
-## ArcGIS for Canadian Municipalities - Election Results 10.2
+## election-results
 
-The Election Results application provides a map-based view of voting results tabulated on election night for each polling division. To display the results, the user can enter an address or polling division number in the search box or click on the map. The polling division will be highlighted and the voting results will be displayed in the tabs along the bottom of the map.
+### English
 
-The application is highly configurable and works with the [Canadian Municipal Data Model](http://www.arcgis.com/home/item.html?id=0487111bd16a4c2ca757687d588aa783 "Download the Data Model").  It can be deployed and used on desktop, smartphones or tablet devices.
+__This product has been deprecated and must no longer be deployed.__ Technical support will no longer be provided for new deployments.
 
-### En français
-Vous trouverez la documentation en français dans la [gallérie d’ArcGIS Online](http://www.arcgis.com/home/item.html?id=cce7b61da118417aa4e36696969698cb).
+Please consider using one of the [Elections Templates](https://solutions.arcgis.com/local-government/elections/) from ArcGIS Solutions for Local Government.
 
-### Full Download
-If you want to deploy this application, please download the full zip file from the [ArcGIS Online item](http://www.arcgis.com/home/item.html?id=cce7b61da118417aa4e36696969698cb), which includes other necessary files such as help documentation, map documents, tools, and sample data.
+---
 
-This GitHub repository is meant mainly for developers who wish to compare code between versions or those who wish to submit code.
+### Français
 
-### Try it Live
+__Ce produit est désormais obsolète et ne doit plus être déployé.__ Aucune assistance technique ne sera fournie pour des nouveaux déploiement.
 
-A preview of this application is available in [English](http://apps.esri.ca/ElectionResults/ "Try it live") and [French](http://apps.esri.ca/ElectionResults/fr "Essayer l'application en français").
+Veuillez considérer les [Elections Templates](https://solutions.arcgis.com/local-government/elections/) de «ArcGIS Solutions for Local Government» comme alternative.
 
-### Required Software & Data
-To run this application on your own server, you will require the software listed below along with the latest version of the [Canadian Municipal Data Model](http://www.arcgis.com/home/item.html?id=0487111bd16a4c2ca757687d588aa783 "Download the Data Model") populated with data. Alternatively, you may [download sample data](http://www.arcgis.com/home/item.html?id=cce7b61da118417aa4e36696969698cb).
-
-- ArcGIS for Desktop 10.2 – Standard or Advanced
-- ArcGIS for Server 10.2 - Standard or Advanced, or an ArcGIS Online organizational account
-- Microsoft Internet Information Services (IIS)
-- Microsoft ASP.Net Framework 4.0
-
-### Issues
-
-Find a bug or want to request a new feature? Please let us know by submitting an issue.
-
-### Contributing
-
-Esri Canada welcomes contributions from anyone and everyone on this open source project. Please see our [guidelines](../master/Contributing.md) in the repository before contributing.
+---
 
 ### Licensing
 Copyright 2013 Esri
